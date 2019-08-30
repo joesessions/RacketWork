@@ -47,7 +47,6 @@
 
 ; WorldState -> Image
 ; adds a status line to the scene created by render  
- 
 ; end? when ufo-height = 0
 (define (end? y)
   (< (to-ground y) 3))
