@@ -5,7 +5,7 @@
 (require 2htdp/universe)
 (require racket/math)
 
-(define GAMESPEED 4)
+(define GAMESPEED 2)
 (define SCNHGT 800)
 (define SCNWDT 800)
 (define MTSCN (empty-scene SCNWDT SCNHGT))
@@ -20,7 +20,6 @@
 (define-struct bomb [x y])
 (define-struct ws [tank ufo missile bomb tick])
 
-;Wishlist:
 (define UFO (overlay (rectangle 88 8 "solid" "black") (circle 40 "solid" "green")))
 (define TANK (overlay/offset (rectangle 4 15 "solid" "black") 0 15 (rectangle 40 15 "solid" "black")))
 (define MISSILE (rectangle 2 20 "solid" "black"))
@@ -125,7 +124,7 @@
 (define (rnd tick)
   (cond
     [(= (modulo tick 10) 0) (- (random 5) 2)]
-    [else 0]))
+    [else 0])) 
 
 ;;(check-random (rnd 10) (- (random 5) 2))
 ;(check-random (rnd 9) 0)
