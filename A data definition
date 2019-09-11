@@ -1,0 +1,14 @@
+A data definition:
+
+Data: information contained in the computer about the outside world. 
+The purpose of a data definition is to describe parts of the parts of this 
+universe and name them so we can refer to them concisely.
+
+A data STRUCTURE is still a piece of data. It's a custom package of data neatly piled into one thing.
+
+A data definition tells what type the data is. Is it a string? a number? These are very straightforward for built-in types. For custom data structures, you might be indicating 100 data types that fit within that type.
+
+A structure definition is literally making the custom data type - naming the structure itself and each of the accessors.
+
+Examples just show examples of the data. 
+
