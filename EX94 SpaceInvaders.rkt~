@@ -14,11 +14,59 @@
 (define TICK 1)
 
 
-(define-struct ufo [x y spd])
 (define-struct tank [x spd])
+(define-struct ufo [x y spd])
 (define-struct missile [x y active])
 (define-struct bomb [x y])
 (define-struct ws [tank ufo missile bomb tick])
+
+;***Predicates for above structs
+;Any - boolean
+
+(define (ws-or-not? ws) (and (tank-or-not? (tank-x (ws-tank ws)) (tank-spd (ws-tank ws)))
+                             (ufo-or-not? (ufo-x (ws-ufo ws)) (ufo-y (ws-ufo ws)) (ufo-spd (ws-ufo ws)))
+                             (missile-or-not? (missile-x (ws-missile ws)) (missile-y (ws-missile ws)) (missile-active (ws-missile ws)))
+                             (bomb-or-not? (bomb-x (ws-bomb ws)) (bomb-y (ws-bomb ws)))))
+(check-expect (ws-or-not? (make-ws (make-tank 5 5) (make-ufo 4 4 6) (make-missile 7 7 #true) (make-bomb 5 5) 10)) #true)
+;(check-expect (ws-or-not (tank-or-not? -5 5) (ufo-or-not? 2 4 6) (missile-or-not? 5 3 #true) (bomb-or-not? 6 6)) #false)
+;(check-expect (ws-or-not (tank-or-not? 5 5) (ufo-or-not? 2 4 -6) (missile-or-not? 5 3 #true) (bomb-or-not? 6 6)) #false)
+;(check-expect (ws-or-not (tank-or-not? 5 5) (ufo-or-not? 2 4 6) (missile-or-not? 5 3 #false) (bomb-or-not? 6 6)) #false)
+;(check-expect (ws-or-not (tank-or-not? 5 5) (ufo-or-not? 2 4 6) (missile-or-not? 5 3 #true) (bomb-or-not? 6 -6)) #false)
+
+
+(define (bomb-or-not? x y) (and (number? x) (number? y) (> x 0) (> y 0)))
+(check-expect (bomb-or-not? 1 1) #true)
+(check-expect (bomb-or-not? -12 12) #false)
+(check-expect (bomb-or-not? 1 -1) #false)
+(check-expect (bomb-or-not? "good" 1) #false)
+(check-expect (bomb-or-not? 1 "bad") #false)
+
+(define (missile-or-not? x y active) (and (number? x) (number? y) (>= x 0) (>= y 0) (boolean? active)))
+(check-expect (missile-or-not? 1 2 #true) #true)               
+(check-expect (missile-or-not? 1 2 #false) #true)
+(check-expect (missile-or-not? -1 2 #true) #false)
+(check-expect (missile-or-not? 1 -2 #true) #false)
+
+  
+(define (tank-or-not? x spd) (and (number? x) (> x 0) (number? spd)))
+(check-expect (tank-or-not? 1 5) #true)
+(check-expect (tank-or-not? -1 5) #false)
+(check-expect (tank-or-not? 1 -5) #true)
+(check-expect (tank-or-not? "blah" 5) #false)
+(check-expect (tank-or-not? -1 "red") #false)
+
+
+
+(check-expect (ufo-or-not? 3 3 3) #true)
+(check-expect (ufo-or-not? 3 "boo" 3) #false)
+(check-expect (ufo-or-not? -3 3 3) #false)
+(check-expect (ufo-or-not? 3 -3 3) #false)
+(check-expect (ufo-or-not? 3 3 -3) #true)
+(define (ufo-or-not? x y spd)
+  (cond
+    [(and (number? x) (number? y) (number? spd) (>= x 0) (>= y 0)) #true]
+    [else false]))
+
 
 (define UFO (overlay (rectangle 88 8 "solid" "black") (circle 40 "solid" "green")))
 (define TANK (overlay/offset (rectangle 4 15 "solid" "black") 0 15 (rectangle 40 15 "solid" "black")))
