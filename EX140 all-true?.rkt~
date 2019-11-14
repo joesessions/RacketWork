@@ -3,17 +3,6 @@
 #reader(lib "htdp-beginner-reader.ss" "lang")((modname |EX140 all-true?|) (read-case-sensitive #t) (teachpacks ()) (htdp-settings #(#t constructor repeating-decimal #f #t none #f () #f)))
 ;EX140
 ;
-; An NEList-of-temperatures is one of: 
-; – (cons CTemperature '())
-; – (cons CTemperature NEList-of-temperatures)
-; interpretation non-empty lists of Celsius temperatures 
-
-; An NEList-of-booleans is one of:
-; - (cons boolean '())
-; - (cons NEList-of-booleans boolean)
-; interpretation: non-empty list of booleans
-
-
 
 ;***** all-true?
 ; list of bool -> bool
@@ -25,9 +14,10 @@
 
 (define (all-true? lob)
   (cond
-    [(and (first lob) (empty? (rest lob))) #true]
+    [(empty? lob) #true]
     [(not (first lob)) #false]
-    [else (all-true? (rest lob))]))
+    [(all-true? (rest lob)) #true]
+    [else #false]))
 ;***** one-true?
 ; list of bool -> bool
 ; if at least one is true, return true
@@ -38,7 +28,7 @@
 
 (define (one-true? lob)
   (cond
+    [(empty? lob) #false]
     [(first lob) #true]
-    [(and (not (first lob)) (empty? (rest lob))) #false]
-    [else (one-true? (rest lob))]))
-
+    [(one-true? (rest lob)) #true]
+    [else #false]))
