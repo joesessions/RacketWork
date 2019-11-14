@@ -7,6 +7,9 @@
 
 (cons "Krishnamurthi" (cons "Flatt" '()))
 
+
+
+
 ;EX130:
 ; A List-of-names is one of:
 ; - '()
@@ -24,9 +27,12 @@
 (define (contains-flatt? alon)
   (cond
     [(empty? alon) #false]
-    [(cons? alon)
-     (or (string=? (first alon) "Flatt")
-         (contains-flatt? (rest alon)))]))
+    [(string=? (first alon) "Flatt") #true]
+    [else (contains-flatt? (rest alon))]))
+
+
+(contains-flatt?
+  (cons "A" (cons "B" (cons "C" '()))))
 
 (check-expect (contains-flatt? '()) #false)
 (check-expect (contains-flatt? (cons "Find" '())) #false)
@@ -34,6 +40,38 @@
 (check-expect (contains-flatt? (cons "Fruit" (cons "Flatt" (cons "Fuego" '())))) #true)
 (check-expect (contains-flatt? (cons "Flatt" (cons "Fruit" (cons "Fuego" '())))) #true)
 (check-expect (contains-flatt? (cons "Flatty" (cons "Fruit" (cons "Fuego" '())))) #false)
+(check-expect (contains-flatt?
+               (cons "Fagan"
+                     (cons "Findler"
+                           (cons "Fisler"
+                                 (cons "Flanagan"
+                                       (cons "Flatt"
+                                             (cons "Felleisen"
+                                                   (cons "Friedman" '())))))))
+               ) #true)
 
 
-     
+;********* contains?
+;string list -> boolean
+;
+(define (contains? str a-list)
+    (cond
+    [(empty? a-list) #false]
+    [(string=? (first a-list) str) #true]
+    [else (contains? str (rest a-list))]))
+
+(check-expect (contains? "Flatt" '()) #false)
+(check-expect (contains? "Flatt" (cons "Find" '())) #false)
+(check-expect (contains? "Flatt" (cons "Flatt" '())) #true)
+(check-expect (contains? "Flatt" (cons "Fruit" (cons "Flatt" (cons "Fuego" '())))) #true)
+(check-expect (contains? "Flatt" (cons "Flatt" (cons "Fruit" (cons "Fuego" '())))) #true)
+(check-expect (contains? "Flatt" (cons "Flatty" (cons "Fruit" (cons "Fuego" '())))) #false)
+(check-expect (contains? "Flatt"
+               (cons "Fagan"
+                     (cons "Findler"
+                           (cons "Fisler"
+                                 (cons "Flanagan"
+                                       (cons "Flatt"
+                                             (cons "Felleisen"
+                                                   (cons "Friedman" '())))))))
+               ) #true)

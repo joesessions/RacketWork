@@ -42,3 +42,5 @@
     [(and (not (first lob)) (empty? (rest lob))) #false]
     [else (one-true? (rest lob))]))
 
+
+;EX148: It's better to work with functions that deal with non-empty lists. The logic is more intuitive and clean.
