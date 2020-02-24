@@ -31,17 +31,37 @@
 ; at (MID,y} to the background image 
 (define (to-image w)
   (cond
-    [(empty? (rest w)) (place-image XSHOTS y SHOT) 
-  BACKGROUND)
+    [(empty? (rest w)) (place-image SHOT XSHOTS (first w) BACKGROUND)]
+    [else (place-image SHOT XSHOTS (first w) (to-image (rest w)))]))
+
 
 ; ShotWorld -> ShotWorld
-; moves each shot on w up by one pixel 
-(define (tock w) w)
+; moves each shot on w up by one pixel
+(check-expect (tock (cons 9 (cons 4 '()))) (cons 8 (cons 3 '())))
+(check-expect (tock (cons 9 (cons 1 '()))) (cons 8 ()))
+(check-expect (tock (cons 9 (cons 7 (cons 4 '())))) (cons 8 (cons 3 '())))
+(define (tock w)
+  (cond
+    [(empty? (rest w))
+         (cond
+           [(> (first w) 0) (- (first w) 1)]
+           [else ()']
+    [else (cons (- (first w) 1) (tock (rest w)))]
 
 ; ShotWorld KeyEvent -> ShotWorld 
 ; adds a shot to the world 
+(check-expect (key-fire (cons 9 '()) " ") (cons HEIGHT (cons 9 '())))
+
 ; if the player presses the space bar
-(define (keyh w ke) w)
+(define (key-fire w ke) 
+  (cond
+    [(string=? ke " ") (cons HEIGHT w)]))
+
+
 
 (check-expect (to-image (cons 9 '()))
               (place-image SHOT XSHOTS 9 BACKGROUND))
+
+
+(check-expect (to-image (cons 4 (cons 9 '())))
+              (place-image SHOT XSHOTS 4 (place-image SHOT XSHOTS 9 BACKGROUND)))

@@ -38,15 +38,15 @@
 ; ShotWorld -> ShotWorld
 ; moves each shot on w up by one pixel
 (check-expect (tock (cons 9 (cons 4 '()))) (cons 8 (cons 3 '())))
-(check-expect (tock (cons 9 (cons 1 '()))) (cons 8 ()))
-(check-expect (tock (cons 9 (cons 7 (cons 4 '())))) (cons 8 (cons 3 '())))
+(check-expect (tock (cons 9 (cons 1 '()))) (cons 8 '()))
+(check-expect (tock (cons 9 (cons 7 (cons 4 '())))) (cons 8 (cons 6 (cons 3 '()))))
 (define (tock w)
   (cond
     [(empty? (rest w))
          (cond
-           [(> (first w) 0) (- (first w) 1)]
-           [else ()']
-    [else (cons (- (first w) 1) (tock (rest w)))]
+           [(> (first w) 1) (cons (- (first w) 1) '())]
+           [else '()])]
+    [else (cons (- (first w) 1) (tock (rest w)))]))
 
 ; ShotWorld KeyEvent -> ShotWorld 
 ; adds a shot to the world 
@@ -65,3 +65,14 @@
 
 (check-expect (to-image (cons 4 (cons 9 '())))
               (place-image SHOT XSHOTS 4 (place-image SHOT XSHOTS 9 BACKGROUND)))
+
+
+; ShotWorld -> ShotWorld 
+(define (main w0)
+  (big-bang w0
+    [on-tick tock]
+    [on-key key-fire]
+    [to-draw to-image]))
+
+
+(main (cons 50 '()))
