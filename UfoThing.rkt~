@@ -16,7 +16,7 @@
 (define UFO (overlay (rectangle 22 8 "solid" "black") (circle 10 "solid" "green")))
  
 ; WorldState -> WorldState
-(define (main y0) 
+(define (main y0)
   (big-bang y0
      [on-tick nxt]
      [to-draw render/status]

@@ -1,0 +1,19 @@
+;; The first three lines of this file were inserted by DrRacket. They record metadata
+;; about the language level of this file in a form that our tools can easily process.
+#reader(lib "htdp-beginner-reader.ss" "lang")((modname |ex 80|) (read-case-sensitive #t) (teachpacks ()) (htdp-settings #(#t constructor repeating-decimal #f #t none #f () #f)))
+; movie -> image
+; Takes a movie and displays the image of it's text fancy
+(define (movie-shower movie) ...(movie-title movie)...)
+
+;pet -> bool
+; takes a pet and tells you if its name starts with H
+(define (pet-name-starts-with-h pet) ...(pet-name h)...
+
+;CD -> bool
+; takes a CD and tells you if its price < 10.00
+(define (discount-CD cd) ...(CD-price)...)
+
+;sweater -> bool
+; tells if a sweater is a particular color
+(define (sweater-finder sweater c) ...(sweater-color sweater)...(c)...)
+ 
