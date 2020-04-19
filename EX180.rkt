@@ -71,5 +71,5 @@
 (check-expect (rest (list 1 2 3))
               (list 2 3))
 
-(check-expect (second (list 1 2 3))
-              2)
+(check-expect (fourth (list 1 2 3 4 5))
+              4)
