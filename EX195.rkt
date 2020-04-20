@@ -143,6 +143,7 @@
     [else (dictionaries-builder (first dict) "a" (list '()) (rest dict))]))
 
 ;** last
+; alos -> object
 ;gets the last item from a list
 ;(check-expect (last (list 1 2 3)) 3)
 ;(check-expect (last (list 1)) 1)
@@ -157,21 +158,23 @@
 ;string char alolos alos
 ;takes a word, the letterIP, the output in progress, and the remaining input words -> a list of word lists for each letter of the alphabet.
 ;goes letter by letter. Starts at a. ends after z.
-;(check-expect (dictionaries-builder "alpha" (list '()) (rest SmallDict))
-;              (list (list "alpha" "aggro" "anvil" "atom") (list "beta") (list "cornholio")));
-;(check-expect (dictionaries-builder "anvil" (list (list "alpha" "aggro")) (list "atom" "beta" "cornholio"))
-;              (list (list "alpha" "aggro" "anvil" "atom") (list "beta") (list "cornholio")))
+(check-expect (dictionaries-builder "alpha" "a" (list '()) (rest SmallDict))
+              (list (list "alpha" "aggro" "anvil" "atom") (list "beta") (list "cornholio")));
+(check-expect (dictionaries-builder "anvil" "a" (list (list "alpha" "aggro")) (list "atom" "beta" "cornholio"))
+              (list (list "alpha" "aggro" "anvil" "atom") (list "beta") (list "cornholio")))
 (check-expect (dictionaries-builder "beta" "a" (list (list "alpha" "aggro" "anvil" "atom")) '())
               (list (list "alpha" "aggro" "anvil" "atom") (list "beta")))
 (define (dictionaries-builder newArg letterIP alolos remainingDict)
   (cond
     ;last entry
-    [(empty? remainingDict) alolos]
+    [(empty? remainingDict) (if (same-letter newArg letterIP)
+                                (add-to-end-of-last-list (list newArg) alolos)
+                                (add-at-end (list newArg) alolos))]
     ;first entry in a letter
     [(not (same-letter newArg letterIP))
-        (dictionaries-builder newArg (next-letter letterIP) (add-at-end (list newArg) alolos) remainingDict)]
+        (dictionaries-builder newArg (next-letter letterIP) (add-at-end '() alolos) remainingDict)]
     ;additional word to that dictionary
-    [else (dictionaries-builder (first remainingDict) letterIP (add-to-end-of-last-list (list newArg) alolos) (rest remainingDict))]))
+    [else (dictionaries-builder (first remainingDict) letterIP (add-to-end-of-last-list newArg alolos) (rest remainingDict))]))
 
 ;next-letter
 ;1String -> 1String
