@@ -3,10 +3,10 @@
 #reader(lib "htdp-beginner-abbr-reader.ss" "lang")((modname EX195) (read-case-sensitive #t) (teachpacks ()) (htdp-settings #(#t constructor repeating-decimal #f #t none #f () #f)))
 (require 2htdp/batch-io)
 
-;(define LOCATION "C:/Users/Joe/Documents/NotePad++/BigDictionary.txt")  ; For windows machine
+(define LOCATION "C:/Users/Joe/Documents/NotePad++/BigDictionary.txt")  ; For windows machine
 
 ; A Dictionary is a List-of-strings.
-;(define AS-LIST (read-lines LOCATION))
+(define AS-LIST (read-lines LOCATION))
 
 (define SmallDict (list "alpha" "aggro" "anvil" "atom" "beta" "cornholio"))
 
@@ -133,14 +133,15 @@
     
 ;*** words-by-first-letter
 ;dictionary -> alod
-;(check-expect (words-by-first-letter SmallDict)
-;              (list (list "alpha" "aggro" "anvil" "atom") (list "beta") (list "cornholio")))
-;(check-expect (words-by-first-letter (list "alpha" "beta" "boobie"))
-;                                     (list (list "alpha") (list "beta" "boobie")))
+(check-expect (words-by-first-letter SmallDict)
+              (list (list "alpha" "aggro" "anvil" "atom") (list "beta") (list "cornholio")))
+(check-expect (words-by-first-letter (list "alpha" "beta" "boobie"))
+                                     (list (list "alpha") (list "beta" "boobie")))
 (define (words-by-first-letter dict)
   (cond
     [(empty? dict) '()]
     [else (dictionaries-builder (first dict) "a" (list '()) (rest dict))]))
+
 
 ;** last
 ; alos -> object
@@ -155,7 +156,7 @@
     [else (last (rest aloa))]))
 
 ;***dictionaries-builder
-;string char alolos alos
+;string 1String alolos alos
 ;takes a word, the letterIP, the output in progress, and the remaining input words -> a list of word lists for each letter of the alphabet.
 ;goes letter by letter. Starts at a. ends after z.
 (check-expect (dictionaries-builder "alpha" "a" (list '()) (rest SmallDict))
@@ -168,7 +169,7 @@
   (cond
     ;last entry
     [(empty? remainingDict) (if (same-letter newArg letterIP)
-                                (add-to-end-of-last-list (list newArg) alolos)
+                                (add-to-end-of-last-list newArg alolos)
                                 (add-at-end (list newArg) alolos))]
     ;first entry in a letter
     [(not (same-letter newArg letterIP))
@@ -189,6 +190,8 @@
 ;if first and second are the same, true
 (define (same-letter w1 w2)
   (string=? (first (explode w1)) (first (explode w2))))
+
+(words-by-first-letter AS-LIST)
 
 ;** others-with-this-letter
 ;string dictionary -> alos
