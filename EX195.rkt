@@ -3,22 +3,24 @@
 #reader(lib "htdp-beginner-abbr-reader.ss" "lang")((modname EX195) (read-case-sensitive #t) (teachpacks ()) (htdp-settings #(#t constructor repeating-decimal #f #t none #f () #f)))
 (require 2htdp/batch-io)
 
-(define LOCATION "C:/Users/Joe/Documents/NotePad++/BigDictionary.txt")  ; For windows machine
-
+;(define LOCATION "C:/Users/Joe/Documents/NotePad++/BigDictionary.txt")  ; For windows machine
+(define LOCATION "/usr/share/dict/words")
 ; A Dictionary is a List-of-strings.
 (define AS-LIST (read-lines LOCATION))
 
 (define SmallDict (list "alpha" "aggro" "anvil" "atom" "beta" "cornholio"))
+(define MedDict (list "alpha" "aggro" "anvil" "atom" "beta" "boobie" "cornholio" "dig" "dumb" "dorky" "dismissive" "domino" "demigod"))
 
 (define LETTERS
   (explode "abcdefghijklmnopqrstuvwxyz"))
 
 ;*** starts-with
 ; letter dictionary -> number
+; see how many words in the dictionary start with that letter.
 ;(check-expect (starts-with "a" SmallDict) 4)
 ;(check-expect (starts-with "b" SmallDict) 1)
 
-(define (starts-with let dict)
+(define (starts-with let dict) 
   (cond
     [(empty? dict) 0]
     [(string=? let (first (explode (first dict)))) (+ 1 (starts-with let (rest dict)))]
@@ -42,7 +44,7 @@
   (cond
     [(empty? dict) '()]
     [else (make-letter-list dict LETTERS)]))
-  
+;dictionary alphabet ->   
 (define (make-letter-list dict lets)
   (cond
     [(empty? lets) '()]
@@ -55,18 +57,18 @@
 ;(check-expect (most-frequent SmallDict)
 ;              (make-letter-count "a" 4))
 ;(check-expect (most-frequent '()) '())
-;(define (most-frequent dict)
-;  (highest-in-list (count-by-letter dict)))
+(define (most-frequent dict)
+  (highest-in-list (count-by-letter dict)))
 
 ;highest-in-list
 ;alolc -> letter-count
 ;(check-expect (highest-in-list (count-by-letter SmallDict))
- ;             (make-letter-count "a" 4))
-;(define (highest-in-list alolc)
-;  (cond
-;    [(empty? alolc) '()]
-;    [(empty? (rest alolc)) (first alolc)]
-;    [else (highest-in-list (highest-helper (first alolc) (rest alolc)))]))
+;              (make-letter-count "a" 4))
+(define (highest-in-list alolc)
+  (cond
+    [(empty? alolc) '()]
+    [(empty? (rest alolc)) (first alolc)]
+    [else (highest-in-list (highest-helper (first alolc) (rest alolc)))]))
 
 ;highest-helper
 ;letter-count alolc -> alolc
@@ -130,18 +132,6 @@
     [(empty? alos) '()]
     [(empty? (rest alos)) '()]
     [else (cons (first alos) (all-but-last (rest alos)))]))
-    
-;*** words-by-first-letter
-;dictionary -> alod
-(check-expect (words-by-first-letter SmallDict)
-              (list (list "alpha" "aggro" "anvil" "atom") (list "beta") (list "cornholio")))
-(check-expect (words-by-first-letter (list "alpha" "beta" "boobie"))
-                                     (list (list "alpha") (list "beta" "boobie")))
-(define (words-by-first-letter dict)
-  (cond
-    [(empty? dict) '()]
-    [else (dictionaries-builder (first dict) "a" (list '()) (rest dict))]))
-
 
 ;** last
 ; alos -> object
@@ -155,16 +145,29 @@
     [(empty? (rest aloa)) (first aloa)]
     [else (last (rest aloa))]))
 
+;*** words-by-first-letter
+;dictionary -> alod
+;(check-expect (words-by-first-letter SmallDict)
+;              (list (list "alpha" "aggro" "anvil" "atom") (list "beta") (list "cornholio")))
+;(check-expect (words-by-first-letter (list "alpha" "beta" "boobie"))
+ ;                                    (list (list "alpha") (list "beta" "boobie")))
+;(check-expect (words-by-first-letter MedDict)
+ ;             (list (list "alpha" "aggro" "anvil" "atom") (list "beta" "boobie") (list "cornholio") (list "dig" "dumb" "dorky" "dismissive" "domino" "demigod")))
+(define (words-by-first-letter dict)
+  (cond
+    [(empty? dict) '()]
+    [else (dictionaries-builder (first dict) "a" (list '()) (rest dict))]))
+    
 ;***dictionaries-builder
 ;string 1String alolos alos
 ;takes a word, the letterIP, the output in progress, and the remaining input words -> a list of word lists for each letter of the alphabet.
 ;goes letter by letter. Starts at a. ends after z.
-(check-expect (dictionaries-builder "alpha" "a" (list '()) (rest SmallDict))
-              (list (list "alpha" "aggro" "anvil" "atom") (list "beta") (list "cornholio")));
-(check-expect (dictionaries-builder "anvil" "a" (list (list "alpha" "aggro")) (list "atom" "beta" "cornholio"))
-              (list (list "alpha" "aggro" "anvil" "atom") (list "beta") (list "cornholio")))
-(check-expect (dictionaries-builder "beta" "a" (list (list "alpha" "aggro" "anvil" "atom")) '())
-              (list (list "alpha" "aggro" "anvil" "atom") (list "beta")))
+;(check-expect (dictionaries-builder "alpha" "a" (list '()) (rest SmallDict))
+ ;             (list (list "alpha" "aggro" "anvil" "atom") (list "beta") (list "cornholio")));
+;(check-expect (dictionaries-builder "anvil" "a" (list (list "alpha" "aggro")) (list "atom" "beta" "cornholio"))
+ ;             (list (list "alpha" "aggro" "anvil" "atom") (list "beta") (list "cornholio")))
+;(check-expect (dictionaries-builder "beta" "a" (list (list "alpha" "aggro" "anvil" "atom")) '())
+ ;             (list (list "alpha" "aggro" "anvil" "atom") (list "beta")))
 (define (dictionaries-builder newArg letterIP alolos remainingDict)
   (cond
     ;last entry
@@ -180,8 +183,8 @@
 ;next-letter
 ;1String -> 1String
 ; given n -> returns o
-(check-expect (next-letter "n") "o")
-(check-expect (next-letter "z") "{")
+;(check-expect (next-letter "n") "o")
+;(check-expect (next-letter "z") "{")
 (define (next-letter in)
   (string (integer->char (+ 1 (char->integer (string-ref in 0))))))
 
@@ -191,7 +194,42 @@
 (define (same-letter w1 w2)
   (string=? (first (explode w1)) (first (explode w2))))
 
-(words-by-first-letter AS-LIST)
+;most-frequentV.2
+;dictionary -> letter-count
+;takes dictionary (dictionary by words) and finds the letter which has the most words in it.
+; 
+;(check-expect (most-frequentV.2 SmallDict)
+;              (make-letter-count "a" 4))
+(check-expect (most-frequentV.2 MedDict)
+              (make-letter-count "d" 6))
+(define (most-frequentV.2 dict)
+  (most-frequentV.2-helper (words-by-first-letter dict)))
+
+;alolos -> lc alolos
+(define (most-frequentV.2-helper alolos)
+  (most-frequentV.2-helper2
+   (make-letter-count (first (explode (first (first alolos)))) (length (first alolos)))
+   (rest alolos)))
+
+;letter-count remaining Alolos -> top letter count
+(define (most-frequentV.2-helper2 lc alolos)
+  (cond
+    [(empty? alolos) lc]
+    [(= (length alolos) 1)
+           (if (> (letter-count-num lc) (length (first alolos)))
+               lc
+               (make-letter-count (first (explode (first (first alolos)))) (length (first alolos))))]
+    [(> (letter-count-num lc) (length (first alolos))) 
+      (most-frequentV.2-helper2 lc (rest alolos))]
+    [else
+      (most-frequentV.2-helper2 (make-letter-count (first (explode (first (first alolos)))) (length (first alolos))) (rest alolos))]))
+ 
+;(words-by-first-letter AS-LIST)
+
+(check-expect
+  (most-frequent MedDict)
+  (most-frequentV.2 MedDict))
+
 
 ;** others-with-this-letter
 ;string dictionary -> alos
