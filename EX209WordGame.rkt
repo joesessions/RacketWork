@@ -191,7 +191,7 @@
   ;  [(empty? lolo1s) '()]
    ; [else (
 
-(define s "ansel")
+(define s "celeste")
 
 ;(words->strings (arrangements (string->word s)))
 
@@ -199,6 +199,3 @@
   (words->strings
     (arrangements (string->word s))))
 
-(in-dictionary
-  (words->strings
-    (arrangements (string->word "celeste"))))
