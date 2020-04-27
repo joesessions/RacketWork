@@ -43,6 +43,34 @@
 ;(in-dictionary
  ;   (words->strings (arrangements (string->word s)))))
 
+
+
+
+;***arrangements
+;lo1s -> lolo1s
+;given any list of characters greater than 2, it will return all permutations
+(define (arrangements lo1s)
+  (cond
+    [(= 1 (length lo1s)) lo1s]
+    [(= 2 (length lo1s)) (list lo1s (list (second lo1s) (first lo1s)))]
+    [(= 3 (length lo1s)) (arrangements-of-three lo1s)]
+    [else (input-all-but-last-three (first lo1s) (second lo1s) (third lo1s) (rest (rest (rest lo1s))))]))
+   
+(define (input-all-but-last-three a b c lo1s)
+  (cond
+    [(empty? lo1s) (arrangements-of-three (list a b c))]
+    [else (insert-everywhere/in-all-words (first lo1s) (input-all-but-last-three a b c (rest lo1s)))])) 
+
+;***arrangements-of-three
+;given a list of three letters, it will return all permutations
+;lo1s -> lolo1s
+(check-expect (arrangements-of-three (list "d" "e" "r"))
+              (list (list "d" "e" "r") (list "e" "d" "r") (list "e" "r" "d")
+                   (list "d" "r" "e") (list "r" "d" "e") (list "r" "e" "d")))
+(define (arrangements-of-three lot)
+             (list (list (first lot) (second lot) (third lot)) (list (second lot) (first lot) (third lot)) (list (second lot) (third lot) (first lot))
+                   (list (first lot) (third lot) (second lot)) (list (third lot) (first lot) (second lot)) (list (third lot) (second lot) (first lot))))
+              
 ;***insert-everywhere/in-all-words
 ;1string low -> low
 (check-expect (insert-everywhere/in-all-words "d"
@@ -50,20 +78,20 @@
     (cons (list "r" "e")
       '()))) (list (list "d" "e" "r") (list "e" "d" "r") (list "e" "r" "d")
                    (list "d" "r" "e") (list "r" "d" "e") (list "r" "e" "d")))
-(check-expect (insert-everywhere/in-all-words "d" '()) "d")
+(check-expect (insert-everywhere/in-all-words "d" '()) '())
 (define (insert-everywhere/in-all-words 1s low)
   (cond
-    [(empty? low) 1s]
-    [else (insert-everywhere/in-one-word 1s (insert-everywhere/in-all-words (first low) (rest low)))]))
+    [(empty? low) '()]
+    [else (append (insert-everywhere/in-one-word 1s (first low)) (insert-everywhere/in-all-words 1s (rest low)))]))
 
 ;***insert-everywhere/in-one-word
 ;1string word (lo1strings) > low
 (check-expect (insert-everywhere/in-one-word "d" (list "e" "r"))
               (list (list "d" "e" "r") (list "e" "d" "r") (list "e" "r" "d")))
 (check-expect (insert-everywhere/in-one-word "d" (list "e")) (list (list "d" "e") (list "e" "d")))
-(check-expect (insert-everywhere/in-one-word "d" (insert-everywhere/in-one-word "e" (list "r")))
-                                             (list (list "d" "e" "r") (list "e" "d" "r") (list "e" "r" "d")
-                                             (list "d" "r" "e") (list "r" "d" "e") (list "r" "e" "d")))
+;(check-expect (insert-everywhere/in-one-word "d" (insert-everywhere/in-one-word "e" (list "r")))
+ ;                                            (list (list "d" "e" "r") (list "e" "d" "r") (list "e" "r" "d")
+  ;                                           (list "d" "r" "e") (list "r" "d" "e") (list "r" "e" "d")))
 (check-expect (insert-everywhere/in-one-word "d" '()) (list "d"))
 (define (insert-everywhere/in-one-word s w1)
   (cond
@@ -146,3 +174,31 @@
 (define (word->string w)
   (implode w))
 
+; create-set
+; alos > alos
+(check-expect (create-set (list "a" "a" "b")) (list "a" "b"))
+(check-expect (create-set (list "a" "b" "b")) (list "a" "b"))
+(define (create-set alos)
+  (cond
+    [(empty? alos) '()]
+    [(contains? (first alos) (rest alos)) (create-set (rest alos))]
+    [else (cons (first alos) (create-set (rest alos)))]))
+
+;***create-set-1s-lists
+;removes duplicate lists from a list of list of 1strings
+;(define (create-set-1s-lists lolo1s)
+ ; (cond
+  ;  [(empty? lolo1s) '()]
+   ; [else (
+
+(define s "ansel")
+
+;(words->strings (arrangements (string->word s)))
+
+(in-dictionary
+  (words->strings
+    (arrangements (string->word s))))
+
+(in-dictionary
+  (words->strings
+    (arrangements (string->word "celeste"))))
