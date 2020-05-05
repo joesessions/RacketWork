@@ -7,23 +7,36 @@
 
 (define GAMESPEED 2)
 (define SEGRADIUS 5)
-(define MAXDIMENSION 50)
+(define MAXDIMENSION 42)
 (define SCNWDT (+ 2 (* 2 SEGRADIUS MAXDIMENSION)))
 (define SCNHGT (+ 2 (* 2 SEGRADIUS MAXDIMENSION)))
 (define MTSCN (empty-scene SCNWDT SCNHGT))
 (define TICK 1)
+(define lposn (list (make-posn 26 6) (make-posn 16 6) (make-posn 6 6)))
 
-;a losegs (list of segments) is either:
-; '()
-; (cons posn (losegs))
+(define-struct ws [lposn dir tick])
 
-;***move-worm
+;bonks-self
+;lop > bool
+; takes lop. If rest contains first, return true.
+(check-expect (bonks-self lposn) false)
+(check-expect (bonks-self (list (make-posn 26 6) (make-posn 16 6) (make-posn 6 6) (make-posn 26 6))) true)
+(define (bonks-self lop)
+   (cond
+     [(empty? (rest lop)) false]
+     [(and (= (posn-x (first lop)) (posn-x (second lop)))
+           (= (posn-y (first lop)) (posn-y (second lop)))) true]
+     [else (bonks-self (cons (first lop) (rest (rest lop))))]))
+
+;***move-snake
 ;np lop > lop
-;takes a list of posn, adds a new posn and returns all but the last
-(check-expect (move-worm (make-posn 15 5) (list (make-posn 20 5) (make-posn 25 5)))
+;takes a list of posn, adds a new posn and returns all but the last. if ext (extend) = true, don't remove.
+(check-expect (move-snake (make-posn 15 5) (list (make-posn 20 5) (make-posn 25 5)) true)
               (list (make-posn 15 5) (make-posn 20 5))) 
-(define (move-worm np lop)
-  (cons np (all-but-last lop)))
+(define (move-snake np lop ext)
+  (if ext
+      (cons np (all-but-last lop))
+      (cons np lop)))
 
 ;***all-but-last
 ;lop > lop
@@ -38,48 +51,61 @@
 
 (define SEG (circle SEGRADIUS "solid" "red"))
 ;x y refer to the coordinate in pixels.
-(define-struct ws [posn dir])
 
+
+;render
+;ws > image
+;takes the world state and plots all the segments on the mtscn
 (define (render w)
-  (place-image SEG
-               (posn-x (ws-posn w)) (posn-y (ws-posn w))
-               MTSCN))
+  (cond
+    [(empty? (ws-lposn w)) MTSCN]
+    [else (place-image SEG
+               (posn-x (first (ws-lposn w)))
+               (posn-y (first (ws-lposn w)))
+               (render (make-ws (rest (ws-lposn w)) (ws-dir w) (ws-tick w))))]))
 
 ;update-tick
 ;every clock tick, marches the snake forward.
 ;directions: 0 right, 1 down, 2 left, 3 up
-(check-expect (update-tick (make-ws (make-posn 6 6) 0))
-              (make-ws (make-posn 16 6) 0))
+(check-expect (update-tick (make-ws lposn 0 1))
+              (make-ws (list (make-posn 36 6) (make-posn 26 6) (make-posn 16 6)) 0 2))
 (define (update-tick w)
-  (cond
-    [(= (ws-dir w) 0) (make-ws (make-posn (+ (* 2 SEGRADIUS) (posn-x (ws-posn w))) (posn-y (ws-posn w))) 0)]
-    [(= (ws-dir w) 1) (make-ws (make-posn (posn-x (ws-posn w)) (+ (* 2 SEGRADIUS) (posn-y (ws-posn w)))) 1)]
-    [(= (ws-dir w) 2) (make-ws (make-posn (- (posn-x (ws-posn w)) (* 2 SEGRADIUS)) (posn-y (ws-posn w))) 2)]
-    [(= (ws-dir w) 3) (make-ws (make-posn (posn-x (ws-posn w)) (- (posn-y (ws-posn w)) (* 2 SEGRADIUS))) 3)]))
+  (if (= (modulo (ws-tick w) 3) 0)
+      (cond
+        [(= (ws-dir w) 0) (make-ws (move-snake (make-posn (+ (* 2 SEGRADIUS) (posn-x (first (ws-lposn w)))) (posn-y (first (ws-lposn w)))) (ws-lposn w) false) 0 (+ 1 (ws-tick w)))]
+        [(= (ws-dir w) 1) (make-ws (move-snake (make-posn (posn-x (first (ws-lposn w))) (+ (* 2 SEGRADIUS) (posn-y (first (ws-lposn w))))) (ws-lposn w) false) 1 (+ 1 (ws-tick w)))]
+        [(= (ws-dir w) 2) (make-ws (move-snake (make-posn (- (posn-x (first (ws-lposn w))) (* 2 SEGRADIUS)) (posn-y (first (ws-lposn w)))) (ws-lposn w) false) 2 (+ 1 (ws-tick w)))]
+        [(= (ws-dir w) 3) (make-ws (move-snake (make-posn (posn-x (first (ws-lposn w))) (- (posn-y (first (ws-lposn w))) (* 2 SEGRADIUS))) (ws-lposn w) false) 3 (+ 1 (ws-tick w)))])
+        (cond
+          [(= (ws-dir w) 0) (make-ws (move-snake (make-posn (+ (* 2 SEGRADIUS) (posn-x (first (ws-lposn w)))) (posn-y (first (ws-lposn w)))) (ws-lposn w) true) 0 (+ 1 (ws-tick w)))]
+          [(= (ws-dir w) 1) (make-ws (move-snake (make-posn (posn-x (first (ws-lposn w))) (+ (* 2 SEGRADIUS) (posn-y (first (ws-lposn w))))) (ws-lposn w) true) 1 (+ 1 (ws-tick w)))]
+          [(= (ws-dir w) 2) (make-ws (move-snake (make-posn (- (posn-x (first (ws-lposn w))) (* 2 SEGRADIUS)) (posn-y (first (ws-lposn w)))) (ws-lposn w) true) 2 (+ 1 (ws-tick w)))]
+          [(= (ws-dir w) 3) (make-ws (move-snake (make-posn (posn-x (first (ws-lposn w))) (- (posn-y (first (ws-lposn w))) (* 2 SEGRADIUS))) (ws-lposn w) true) 3 (+ 1 (ws-tick w)))])))
 
 ;update-key
 ;pressing an arrow key directs the snake.
-(check-expect (update-key (make-ws (make-posn 50 50) 1) "left")
-              (make-ws (make-posn 50 50) 2))
+(check-expect (update-key (make-ws lposn 1 1) "left")
+              (make-ws lposn 2 1))
 (define (update-key w ke)
   (cond
-    [(and (string=? ke "right") (not (= (ws-dir w) 2))) (make-ws (make-posn (posn-x (ws-posn w)) (posn-y (ws-posn w))) 0)]
-    [(and (string=? ke "down") (not (= (ws-dir w) 3))) (make-ws (make-posn (posn-x (ws-posn w)) (posn-y (ws-posn w))) 1)]
-    [(and (string=? ke "left") (not (= (ws-dir w) 0))) (make-ws (make-posn (posn-x (ws-posn w)) (posn-y (ws-posn w))) 2)]
-    [(and (string=? ke "up") (not (= (ws-dir w) 1))) (make-ws (make-posn (posn-x (ws-posn w)) (posn-y (ws-posn w))) 3)]
+    [(and (string=? ke "right") (not (= (ws-dir w) 2))) (make-ws (ws-lposn w) 0 (ws-tick w))] 
+    [(and (string=? ke "down") (not (= (ws-dir w) 3))) (make-ws (ws-lposn w) 1 (ws-tick w))]
+    [(and (string=? ke "left") (not (= (ws-dir w) 0))) (make-ws (ws-lposn w) 2 (ws-tick w))]
+    [(and (string=? ke "up") (not (= (ws-dir w) 1))) (make-ws (ws-lposn w) 3 (ws-tick w))]
     [else w]))
 
 ;end?
 ;end if snakehead hits wall
-(check-expect (end? (make-ws (make-posn 6 6) 2)) false)
-(check-expect (end? (make-ws (make-posn -4 6) 2)) true)
-(check-expect (end? (make-ws (make-posn 6 111116) 2)) true)
-(check-expect (end? (make-ws (make-posn 6 -6) 2)) true)
+(check-expect (end? (make-ws (list (make-posn 6 6)) 2 1)) false)
+(check-expect (end? (make-ws (list (make-posn -4 6)) 2 1)) true)
+(check-expect (end? (make-ws (list (make-posn 6 111116)) 1 1)) true)
+(check-expect (end? (make-ws (list (make-posn 6 -6)) 2 1)) true)
 (define (end? w)
-  (or (< (posn-x (ws-posn w)) 0)
-      (< (posn-y (ws-posn w)) 0)
-      (> (posn-x (ws-posn w)) SCNWDT)
-      (> (posn-y (ws-posn w)) SCNHGT)))
+  (or (< (posn-x (first (ws-lposn w))) 0)
+      (< (posn-y (first (ws-lposn w))) 0)
+      (> (posn-x (first (ws-lposn w))) SCNWDT)
+      (> (posn-y (first (ws-lposn w))) SCNHGT)
+      (bonks-self (ws-lposn w))))
 
              
 
@@ -90,4 +116,4 @@
   [to-draw render]
   [stop-when end?]))
 
-;(main (make-ws (make-posn 5 5) 0))
+(main (make-ws lposn 0 0))
