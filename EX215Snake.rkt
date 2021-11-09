@@ -107,7 +107,10 @@
       (> (posn-y (first (ws-lposn w))) SCNHGT)
       (bonks-self (ws-lposn w))))
 
-             
+;new-block
+;ws -> ws
+;retires "block" to the landscape and creates a new block
+(check-expect
 
 (define (main ws)
  (big-bang ws

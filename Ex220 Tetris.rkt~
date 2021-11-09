@@ -1,0 +1,74 @@
+;; The first three lines of this file were inserted by DrRacket. They record metadata
+;; about the language level of this file in a form that our tools can easily process.
+#reader(lib "htdp-beginner-abbr-reader.ss" "lang")((modname |Ex220 Tetris|) (read-case-sensitive #t) (teachpacks ()) (htdp-settings #(#t constructor repeating-decimal #f #t none #f () #f)))
+(require 2htdp/image)
+(require 2htdp/universe)
+(require racket/math)
+(define HEIGHT 15)
+(define WIDTH 10) ; # of blocks, horizontally 
+(define SIZE 10) ; blocks are squares
+(define SCNWDT (* WIDTH SIZE))
+(define SCNHGT (* HEIGHT SIZE))
+
+
+(define MTSCN (empty-scene SCNWDT SCNHGT))
+
+(define BLOCK ; red squares with black rims
+  (overlay
+    (square (- SIZE 1) "solid" "red")
+    (square SIZE "outline" "black")))
+
+(define-struct tetris [block landscape])
+(define-struct block [x y])
+ 
+; A Tetris is a structure:
+;   (make-tetris Block Landscape)
+; A Landscape is one of: 
+; – '() 
+; – (cons Block Landscape)
+; A Block is a structure:
+;   (make-block N N)
+ 
+; interpretations
+; (make-block x y) depicts a block whose left 
+; corner is (* x SIZE) pixels from the left and
+; (* y SIZE) pixels from the top;
+; (make-tetris b0 (list b1 b2 ...)) means b0 is the
+; dropping block, while b1, b2, and ... are resting
+
+(define landscape0 '())
+(define block-dropping (make-block 50 10))
+;(define tetris0 (make-tetris '() landscape0))
+(define tetris0-drop (make-tetris block-dropping landscape0))
+
+(define block-landed (make-block 50 (* 10 (- HEIGHT 1))))
+
+(define block-on-block (make-block 50 (* 10 (- HEIGHT 2))))
+
+(define block-on-block-landscape (list block-on-block block-landed))
+
+(define tetris-3 (make-tetris block-dropping block-on-block-landscape))
+
+;(check-expect (tetris-render tetris0)
+ ;             MTSCN)
+(check-expect (tetris-render tetris0-drop)
+              (place-image BLOCK 50 10 MTSCN))
+(check-expect (tetris-render tetris-3)
+              (place-image BLOCK 50 10
+               (place-image BLOCK 50 130
+                 (place-image BLOCK 50 140
+                   MTSCN))))
+
+(define landscape (list (make-posn 50 130) (make-posn 50 140)))
+              
+(define (tetris-render ws)
+  (cond
+    [(empty? (tetris-landscape ws)) (place-image BLOCK (block-x (tetris-block ws)) (block-y (tetris-block ws)) MTSCN)]
+    [else (place-image BLOCK
+               (block-x (first (tetris-landscape ws)))
+               (block-y (first (tetris-landscape ws)))
+               (tetris-render (make-tetris (tetris-block ws) (rest (tetris-landscape ws)))))]))
+
+(tetris-render tetris-3)
+
+               

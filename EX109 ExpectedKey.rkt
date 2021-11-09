@@ -70,3 +70,5 @@
 		[(string=? ws "DD") GR]
 		[(string=? ws "ER") RR]
 		))
+
+(main "AA")
