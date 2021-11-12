@@ -4,6 +4,7 @@
 (require 2htdp/image)
 (require 2htdp/universe)
 (require racket/math)
+(require 2htdp/web-io)
 
 ;'(1 "a" 2 #false 3 "c")
 ;(list 1 "a" 2 #false 3 "c")
@@ -32,12 +33,14 @@
 (define (my-first-web-page author title)
   `(html
      (head
-       (title ,title)
+       (title title)
        (meta ((http-equiv "content-type")
               (content "text-html"))))
      (body
-       (h1 ,title)
-       (p "I, " ,author ", made this page."))))
+       (h1 title)
+       (p "I, " author ", made this page."))))
+
+(show-in-browser (my-first-web-page "Joe" "Who made who?"))
 
 `(1 ,(+ 1 1) 3)
 (list 1 (+ 1 1) 3)
@@ -58,20 +61,16 @@
       (cons (cons "dawn" (cons 2300 '())) '()))))
 
 ;and this second web page:
-`(html
-   (head
-     (title ,"title"))
-   (body
-     (h1 ,"title")
-     (p "A second web page")))
+;(show-in-browser
+;`(html
+ ;  (head
+  ;   (title ,"title"))
+  ; (body
+   ;  (h1 ,"title")
+    ; (p "A second web page"))))
 
-(list 'html (list 'head (list 'title "title"))
-            (list 'body (list 'h1 "title")
-                        (list 'p "A second web page")))
+;(list 'html (list 'head (list 'title "title"))
+ ;           (list 'body (list 'h1 "title")
+  ;                      (list 'p "A second web page")))
 
-(cons 'html (cons (cons 'head
-                        (cons (cons 'title (cons "title" '())) '())) ; okay to here
-            (cons (cons 'body 
-                        (cons
-                         (cons 'h1 (cons "title" '()))
-                         (cons (cons 'p (cons "A Second web page" '())) '()) '())) '())))
+

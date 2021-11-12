@@ -6,6 +6,7 @@
 (require 2htdp/universe)
 (require racket/math)
 
+(require 2htdp/web-io)
 
 
 
@@ -54,13 +55,14 @@
 
 
 ;and this third web page:
+(show-in-browser
 `(html
    (body
      (table ((border "1"))
+       (tr 
+         ,@(make-row '( 1  200000000000000)))
        (tr ((width "200"))
-         ,@(make-row '( 1  2)))
-       (tr ((width "200"))
-         ,@(make-row '(99 65))))))
+         ,@(make-row '(99 65)))))))
 (list 'html (list 'body (list 'table (list (list 'border "1"))
                               (list 'tr (list (list 'width "200")) (list 'td "1") (list 'td "2"))
                               (list 'tr (list (list 'width "200")) (list 'td "99") (list 'td "65"))
