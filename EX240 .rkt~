@@ -47,39 +47,5 @@
 
 ;An LNum is a [LThing Number]
 
-; An [NEList typ] is one of
-; (cons typ '())
-; (cons typ [NEList])
 
-; A [Maybe X] is one of: 
-; – #false 
-; – X
 
-; A [Maybe String] is one of:
-; - #false
-; - string
-
-; A [Maybe [List-of String] is one of:
-; - #false
-; - [List-of String]
-
-; A [List-of [Maybe string]] is one of:
-; - '()
-; - (cons [Maybe String] [List-of (Maybe String])
-
-; String [List-of String] -> [Maybe [List-of String]]
-; returns the remainder of los starting with s 
-; #false otherwise 
-(check-expect (occurs "a" (list "b" "a" "d" "e"))
-              (list "d" "e"))
-(check-expect (occurs "a" (list "b" "c" "d")) #f)
-(check-expect (occurs 2 (list "b" "c" "d")) #f)
-(check-expect (occurs "a" (list 1 "c" "d")) #f)
-(define (occurs s los)
-  (cond
-    [(empty? los) #false]
-    [(not (string? s)) #false]
-    [(not (string? (first los))) #false]
-    [(string=? s (first los)) (rest los)]
-    [else (occurs s (rest los))]))
- 
