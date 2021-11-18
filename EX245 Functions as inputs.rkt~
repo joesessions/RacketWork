@@ -37,14 +37,3 @@
   (and (and (= (X 1.2) (Y 1.2))
             (= (X 3)   (Y 3)))
             (= (X -5.775) (Y -5.775))))
-
-;Can we hope to define function=?, which determines whether two functions from numbers to numbers are equal?
-;If so, define the function. If not, explain why and consider the
-;implication that you have encountered the first easily definable idea for which you cannot define a function.
-
-;Let's say you were comparing two functions, plus1 and plus1except6.0000000000000000000000000001turnsouttobe9,
-;this would put you in a place of having to compare an infinity of inputs, because a function could always throw that sort of
-;curveball and you'd never know how to look for it. While you could make a function that checks every .0000000000000000000000000001
-;increment, you're sunk trying to check manipulations of irrational numbers like pi. plus1exceptpi/.0707turnsouttobe9 for example -
-;you can make unthinkable, unpredictable irrational numbers forever, and you could never write your function=? function to
-;account for them all. 
