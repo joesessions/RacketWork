@@ -6,10 +6,10 @@
 (require racket/math)
 (require 2htdp/web-io)
 
-(check-expect (extract > '(1 5 10) 4) '(5 10))
-(check-expect (extract > '(1 5 10) 10) '())
-(check-expect (extract > '(1 5 10) 0) '(1 5 10))
-(check-expect (extract < '(1 5 10) 6) '(1 5))
+;(check-expect (extract > '(1 5 10) 4) '(5 10))
+;(check-expect (extract > '(1 5 10) 10) '())
+;(check-expect (extract > '(1 5 10) 0) '(1 5 10))
+;(check-expect (extract < '(1 5 10) 6) '(1 5))
 ; fails as it should (check-expect (extract < '(1 5 10) 6) '(5 1))
 
 
@@ -18,6 +18,9 @@
     [(empty? l) '()]
     [(R (first l) t) (cons (first l) (extract R (rest l) t))]
     [else (extract R (rest l) t)]))
+
+(extract < (cons 6 (cons 4 '())) 5)
+
 
 (check-expect (squared>? 5 20) #true)
 (check-expect (squared>? 5 25) #false)
