@@ -29,4 +29,7 @@
 
 
 ;Then abstract over the two signatures, following the above steps.
-;Also show that the generalized signature can be instantiated to describe the signature of a sort function for lists of IRs. 
+
+;[List-of X] [X X -> Boolean] -> [List-of X]
+;Also show that the generalized signature can be instantiated to describe the signature of a sort function for lists of IRs.
+;[List-of IR] [IR IR -> Boolean] -> [List-of IR]
