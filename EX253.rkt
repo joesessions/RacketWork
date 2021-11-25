@@ -18,3 +18,15 @@
 ; [[List-of Number] -> Boolean]
 ;AllPositiveIntegers?
 ;Describe these collections with at least one example from ISL.
+
+;Exercise 254. Formulate signatures for the following functions:
+;sort-n, which consumes a list of numbers and a function that consumes two numbers (from the list) and produces a Boolean;
+;sort-n produces a sorted list of numbers.
+;[List-of numbers] [number number -> Boolean] -> [List-of numbers]
+;sort-s, which consumes a list of strings and a function that consumes two strings (from the list) and produces a Boolean;
+;sort-s produces a sorted list of strings.
+;[List-of strings] [string string -> Boolean] -> [List-of strings]
+
+
+;Then abstract over the two signatures, following the above steps.
+;Also show that the generalized signature can be instantiated to describe the signature of a sort function for lists of IRs. 
