@@ -33,3 +33,16 @@
 ;[List-of X] [X X -> Boolean] -> [List-of X]
 ;Also show that the generalized signature can be instantiated to describe the signature of a sort function for lists of IRs.
 ;[List-of IR] [IR IR -> Boolean] -> [List-of IR]
+
+
+;Exercise 255. Formulate signatures for the following functions:
+;map-n, which consumes a list of numbers and a function from numbers to numbers to produce a list of numbers.
+;[List-of numbers] [numbers->numbers] -> [List-of numbers]
+
+;map-s, which consumes a list of strings and a function from strings to strings and produces a list of strings.
+;[List-of strings] [strings->strings] -> [List-of strings]
+
+;Then abstract over the two signatures, following the above steps. Also show that the generalized signature
+;can be instantiated to describe the signature of the map1 function above.
+;[List-of X] [X -> X] -> [List-of X]
+
