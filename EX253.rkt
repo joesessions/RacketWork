@@ -46,3 +46,19 @@
 ;can be instantiated to describe the signature of the map1 function above.
 ;[List-of X] [X -> X] -> [List-of X]
 
+;Exercise 256. Explain the following abstract function:
+; [X] [X -> Number] [NEList-of X] -> X 
+; finds the (first) item in lx that maximizes f
+; if (argmax f (list x-1 ... x-n)) == x-i, 
+; then (>= (f x-i) (f x-1)), (>= (f x-i) (f x-2)), ...
+;(define (argmax f lx) ...)
+;Use it on concrete examples in ISL. Can you articulate an analogous purpose statement for argmin?
+
+(check-expect (argmax2 add1 '(-5 -1 0 2 3)) 3)
+(check-expect (argmax2 sqr '(-5 -1 0 2 3)) -5)
+(define (argmax2 func lon)
+  (cond
+    [(empty? (rest lon)) (first lon)]
+    [(> (func (first lon)) (func (second lon)))
+     (argmax func (cons (first lon) (rest (rest lon))))]
+    [else (argmax func (rest lon))]))
