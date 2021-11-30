@@ -62,3 +62,36 @@
     [(> (func (first lon)) (func (second lon)))
      (argmax func (cons (first lon) (rest (rest lon))))]
     [else (argmax func (rest lon))]))
+
+
+(define-struct address [first-name last-name street])
+; An Addr is a structure: 
+;   (make-address String String String)
+; interpretation associates an address with a person's name
+ 
+; [List-of Addr] -> String 
+; creates a string from first names, 
+; sorted in alphabetical order,
+; separated and surrounded by blank spaces
+(define (listing l)
+  (foldr string-append-with-space " "
+         (sort (map address-first-name l) string<?)))
+ 
+; String String -> String 
+; appends two strings, prefixes with " " 
+(define (string-append-with-space s t)
+  (string-append " " s t))
+ 
+(define ex0
+  (list (make-address "Robert"   "Findler" "South")
+        (make-address "Matthew"  "Flatt"   "Canyon")
+        (make-address "Shriram"  "Krishna" "Yellow")))
+ 
+(check-expect (listing ex0) " Matthew Robert Shriram ")
+
+;EX257  Design build-l*st, which works just like build-list. Hint Recall the add-at-end function from exercise 193.
+;number [number->number] -> lon
+;Applies f to numbers to from 0 to j-1
+(check-expect (build-l*st 3 +) '(1 2 3))
+(check-expect (build-l*st 4 sqr) '(0 1 4 9))
+(define (check-expect
