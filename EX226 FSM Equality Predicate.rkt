@@ -132,6 +132,6 @@
 
 
 
-(simulate.v2 fsm-traffic "red")
+;(simulate.v2 fsm-traffic "red")
 
-;(simulate.v2 fsm-bw "white")
+(simulate.v2 fsm-bw "white")

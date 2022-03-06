@@ -98,8 +98,11 @@
 ; SimulationState.v2 KeyEvent -> SimulationState.v2
 ; finds the next state from an-fsm and ke
 (define (find-next-state an-fsm ke)
-  (make-fs  (fs-fsm an-fsm)
-            (find (fs-fsm an-fsm) (fs-current an-fsm))))
+  (cond
+    [(string=? ke "r") (make-fs (fs-fsm an-fsm) (transition-current (first (fs-fsm an-fsm))))]
+    [else 
+     (make-fs  (fs-fsm an-fsm)
+            (find (fs-fsm an-fsm) (fs-current an-fsm)))]))
 
 
 ; FSM FSM-State -> FSM-State
